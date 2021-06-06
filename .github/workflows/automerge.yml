@@ -1,0 +1,16 @@
+on: 
+  pull_request
+
+jobs:
+  build:
+    name: automerge on comment
+    if:
+      pull_request
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run a multi-line script
+      run: |
+        echo Add other actions to build,
+        echo test, and deploy your project.
+        echo testing this out!
