@@ -22,7 +22,7 @@ async function autoMerge() {
     });
 
     core.info("diff");
-    core.info(diff);
+    core.info(JSON.stringify(diff));
 
     // TODO: merge 
 
