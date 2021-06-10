@@ -13,9 +13,9 @@ async function autoMerge() {
     const ref = tools.context.ref;
     const pull_number = Number(ref.split("/")[2]);
     core.info("PR #: ", pull_number)
-
-    core.info(octokit);
     
+    core.info(pulls)
+
     const pr = await pulls.get({
       ...github.context.repo,
       pull_number,
