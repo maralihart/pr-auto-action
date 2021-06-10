@@ -14,11 +14,11 @@ async function autoMerge() {
     const pr_number = payload.issue.number;
 
     // TODO: check to make sure only one line has been changed!
-    const diff = await octokit.rest.pulls.list({
+    const diff = await octokit.rest.pulls.get({
       owner: owner,
       repo: repo,
       pull_number: pr_number
-    }).data[0].diff_url;
+    }).data.diff_url;
 
     core.info("diff");
     core.info(diff);
