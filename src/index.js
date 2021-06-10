@@ -10,7 +10,7 @@ async function autoMerge() {
     core.info(JSON.stringify(payload));
     
     const myToken = core.getInput("github-token");
-    const octokit = await github.getOctokit(myToken);
+    const octokit = github.getOctokit(myToken);
     core.info("---OCTOKIT---")
     core.info(myToken.length);
     core.info(JSON.stringify(octokit));
@@ -26,6 +26,16 @@ async function autoMerge() {
     core.info(repo)
     core.info("pr_number: ")
     core.info(pr_number);
+
+    const allPullRequests = await octokit.rest.pulls.list({
+      owner,
+      repo,
+    });
+    
+    core.info(JSON.stringify(allPullRequests));
+
+    const { data } = allPullRequests;
+    coore.info(data);
 
     // TODO: check to make sure only one line has been changed!
 
