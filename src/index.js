@@ -17,7 +17,12 @@ async function autoMerge() {
     const repo = payload.repository.name;
     const pr_number = payload.issue.number;
 
-    core.info("owner: ", owner, "\nrepo: ", repo, "\n pr_number: ", pr_number);
+    core.info("owner: ")
+    core.info(owner)
+    core.info("repo: ")
+    core.info(repo)
+    core.info("pr_number: ")
+    core.info(pr_number);
 
     await octokit.pulls.merge({
       owner: owner,
