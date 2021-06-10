@@ -13,27 +13,54 @@ async function autoMerge() {
     const repo = payload.repository.name;
     const pr_number = payload.issue.number;
 
-    // TODO: check to make sure only one line has been changed!
-    // TODO: take care of merge conflicts?
-    const diff = await octokit.rest.pulls.get({
+    const pr = await octokit.rest.pulls.get({
       owner: owner,
       repo: repo,
       pull_number: pr_number
     });
 
-    core.info("diff");
-    core.info(JSON.stringify(diff));
+    const mergeable = pr.data.mergeable_state;
+    const changed_files = pr.data.changed_files === 1;
+    const additions = pr.data.additions;
+    const deletions = pr.data.deletions;
 
-    // TODO: merge 
+    const oneLineAdded = additions === 1 && deletions === 0;
+    const oneLineSwapped = additions === 2 && deletions === 1;
 
-    await octokit.rest.pulls.merge({
-      owner: owner,
-      repo: repo,
-      pull_number: pr_number,
-      merge_method: "merge"
-    });
+    core.info("mergeable");
+    core.info(mergeable);
 
-    core.info("PR successfully merged!");
+    core.info("changed_files");
+    core.info(changed_files);
+
+    core.info("additions");
+    core.info(additions);
+
+    core.info("deletions");
+    core.info(deletions);
+
+    core.info("oneLineAdded");
+    core.info(oneLineAdded);
+
+    core.info("oneLineSwapped");
+    core.info(oneLineSwapped);
+
+    // TODO: take care of merge conflicts?
+    if (!mergeable) {
+      core.info("can't merge, oop")
+    }
+
+    // TODO: check to make sure only one line has been changed!
+    if (oneLineAdded || oneLineSwapped) {
+      await octokit.rest.pulls.merge({
+        owner: owner,
+        repo: repo,
+        pull_number: pr_number,
+        merge_method: "merge"
+      });
+
+      core.info("PR successfully merged!");
+    }
 
   } catch (error) {
     core.setFailed(error.message);
