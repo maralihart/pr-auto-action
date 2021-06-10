@@ -14,10 +14,8 @@ async function autoMerge() {
     const pull_number = Number(ref.split("/")[2]);
     core.info("PR #: ", pull_number)
 
-    const reviews = await octokit.pulls.listReviews({
-      ...github.context.repo,
-      pull_number,
-    });
+    core.info(octokit);
+    
     const pr = await octokit.pulls.get({
       ...github.context.repo,
       pull_number,
