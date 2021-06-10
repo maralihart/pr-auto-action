@@ -12,6 +12,7 @@ async function autoMerge() {
     const myToken = core.getInput("github-token");
     const octokit = github.getOctokit(myToken);
     core.info("---OCTOKIT---")
+    core.info(myToken.length);
     core.info(JSON.stringify(octokit));
 
     core.info("PR #: ", payload.issue.number)
