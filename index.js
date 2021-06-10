@@ -3,6 +3,7 @@ const github = require("@actions/github");
 
 const axios = require("axios");
 const cheerio = require("cheerio");
+const { merge } = require("cheerio/lib/static");
 
 async function autoMerge() {
   try {
@@ -27,8 +28,24 @@ async function autoMerge() {
     const deletions = pr.data.deletions;
     const oneLineAdded = additions === 1 && deletions === 0;
 
-    // TODO: take care of merge conflicts?
-    if (!mergeable && oneLineAdded) {
+
+    core.info("merge")
+    core.info(mergeable)
+
+    if (!oneLineAdded) {
+      // TODO: add a comment to the PR saying that only one line can be changed
+      octokit.rest.pulls.createReviewComment({
+        owner: owner,
+        repo: repo,
+        pull_number: prNumber,
+        body: "Try changing your code so you're only adding your hometown, then ask someone else to comment again for it to automatically merge!",
+      });
+      return
+    }
+
+    if (!mergeable) {
+      // TODO: take care of merge conflicts?
+      core.info("enter not merge")
       const diffURL = pr.data.diff_url;
       const diff = await getDiff(diffURL);
       core.info("diff");
@@ -37,6 +54,7 @@ async function autoMerge() {
       // delete old pr
       // call the commit a version of the person's name?
       core.info("can't merge, oop")
+      return
     }
 
     if (onlyOneChangedFile && oneLineAdded) {
@@ -47,16 +65,6 @@ async function autoMerge() {
         merge_method: "merge"
       });
 
-      if (!oneLineAdded) {
-        // TODO: add a comment to the PR saying that only one line can be changed
-        octokit.rest.pulls.createReviewComment({
-          owner: owner,
-          repo: repo,
-          pull_number: prNumber,
-          body: "Try changing your code so you're only adding your hometown, then ask someone else to comment again for it to automatically merge!",
-        });
-      }
-
       core.info("PR successfully merged!");
     }
 
@@ -66,6 +74,7 @@ async function autoMerge() {
 }
 
 async function getDiff(url) {
+  core.info("start webscrape")
   const regex = /\+[a-zA-Z]+[\s\S]*/gm;
 
   const { data } = await axios.get(url);
@@ -78,6 +87,7 @@ async function getDiff(url) {
     if (search.index === regex.lastIndex) regex.lastIndex++;
 
     search.forEach((match, groupIndex) => {
+      core.info(match)
       diff = match;
     });
 
