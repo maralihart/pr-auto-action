@@ -35,7 +35,7 @@ async function autoMerge() {
     core.info(JSON.stringify(allPullRequests));
 
     const { data } = allPullRequests;
-    coore.info(data);
+    core.info(data);
 
     // TODO: check to make sure only one line has been changed!
 
