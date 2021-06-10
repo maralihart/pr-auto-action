@@ -2,4 +2,4 @@
 
 A GitHub action to automatically merge PRs that only have one line changed upon comments. This repo was created for [Major League Hacking's GitHub Workshop](https://github.com/MLH/mlh-localhost-github)
 
-Special thanks to [the Frontside Discord community](https://discord.gg/YxWuzm4WR4) for helping me debug and get past a major blocker, especially [minkimcello](https://github.com/minkimcello) and [JacobBolda](https://github.com/jacobbolda)!
+Special thanks to [the Frontside Discord community](https://discord.gg/YxWuzm4WR4) for helping me debug and get past a major blocker, especially [minkimcello](https://github.com/minkimcello) and [JacobBolda]()!
