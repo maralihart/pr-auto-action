@@ -8,7 +8,7 @@ async function autoMerge() {
     const merge_method = core.getInput("merge-method");
     
     const myToken = core.getInput("github-token");
-    const octokit = new github.GitHub(myToken);
+    const octokit = github.getOctokit(myToken);
 
     const ref = tools.context.ref;
     const pull_number = Number(ref.split("/")[2]);
