@@ -35,7 +35,7 @@ async function autoMerge() {
 
     if (!oneLineAdded) {
       // TODO: add a comment to the PR saying that only one line can be changed
-      octokit.rest.pulls.createReviewComment({
+      await octokit.rest.pulls.createReviewComment({
         owner: owner,
         repo: repo,
         pull_number: prNumber,
@@ -44,7 +44,7 @@ async function autoMerge() {
       return;
     };
 
-    if (!mergeable) {
+    if (mergeable == "dirty") {
       // TODO: take care of merge con;flicts?
       core.info("enter not merge");
       const diffURL = pr.data.diff_url;
