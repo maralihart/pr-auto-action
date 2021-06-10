@@ -6,6 +6,10 @@ const tools = new Toolkit();
 async function autoMerge() {
   try {
     const merge_method = core.getInput("merge-method");
+    const payload = github.context.payload;
+    core.info(payload);
+    core.info(payload.comment);
+    core.info(payload.pull_request);
     
     const myToken = core.getInput("github-token");
     const pulls = github.getOctokit(myToken).rest.pulls;
