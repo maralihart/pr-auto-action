@@ -9,7 +9,7 @@ async function autoMerge() {
     const payload = github.context.payload;
     core.info(payload);
     core.info(payload.comment);
-    core.info(payload.pull_request);
+    core.info(payload.pull_request.title);
     
     const myToken = core.getInput("github-token");
     const pulls = github.getOctokit(myToken).rest.pulls;
