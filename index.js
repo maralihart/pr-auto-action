@@ -33,7 +33,7 @@ async function autoMerge() {
       await octokit.rest.pulls.merge({
         owner: owner,
         repo: repo,
-        pull_number: pr_number,
+        pull_number: prNumber,
         merge_method: "merge"
       });
 
