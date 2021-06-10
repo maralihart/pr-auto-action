@@ -12,24 +12,20 @@ async function autoMerge() {
     const myToken = core.getInput("github-token");
     const octokit = github.getOctokit(myToken);
 
-    core.info("PR #: ", payload.pull_request_number)
-    
-    core.info(JSON.stringify(octokit.pulls));
+    core.info("PR #: ", payload.issue.number)
+    const owner = payload.issue.user.login;
+    const repo = payload.repository.name;
+    const pr_number = payload.issue.number;
 
     await octokit.pulls.merge({
-      owner: payload.repository.owner.login,
-      repo: payload.repository.name,
-      pull_number: payload.pull_request_number,
+      owner: owner,
+      repo: repo,
+      pull_number: pr_number,
       merge_method: "merge",
     });
 
-    core.info(`Success Merge PR!`);
+    core.info("PR successfully merged!");
 
-    octokit.git.deleteRef({
-      owner: payload.repository.owner.login,
-      repo: payload.repository.name,
-      ref: payload.pull_request.head.sha
-    });
   } catch (error) {
     core.setFailed(error.message);
   }
