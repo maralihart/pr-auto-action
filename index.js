@@ -86,7 +86,7 @@ async function getDiff(url) {
 
     search.forEach((match, groupIndex) => {
       core.info(match);
-      diff = match.group(1);
+      diff = match[1];
       core.info(diff);
     });
 
