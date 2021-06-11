@@ -3,6 +3,7 @@ const github = require("@actions/github");
 
 const axios = require("axios");
 const cheerio = require("cheerio");
+const { CONNREFUSED } = require("node:dns");
 
 core.info("output")
 
@@ -48,8 +49,7 @@ async function autoMerge() {
     // TODO: Fix "dirty" PRs
 
     if (mergeable == "dirty") {
-      // TODO: take care of merge con;flicts?
-      core.info("enter not merge");
+      // TODO: take care of merge conflicts?
       const diffURL = pr.data.diff_url;
       const diff = await getDiff(diffURL);
       core.info("diff");
@@ -78,21 +78,19 @@ async function autoMerge() {
 }
 
 async function getDiff(url) {
-  core.info("start webscrape");
-  const regex = /\+[a-zA-Z]+[\s\S]*/gm;
+  const regex = /\+([a-zA-Z]+[\s\S]*)^</gm;
 
   const { data } = await axios.get(url);
   const html = cheerio.load(data).html();
-  core.info(html);
 
-  let search;
-  let diff;
+  let search, diff;]
   while ((search = regex.exec(html)) !== null) {
     if (search.index === regex.lastIndex) regex.lastIndex++;
 
     search.forEach((match, groupIndex) => {
       core.info(match);
-      diff = match;
+      diff = match.group(1);
+      core.info(diff);
     });
 
   return diff;
