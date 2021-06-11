@@ -36,6 +36,7 @@ async function autoMerge() {
       //   position: 1,
       //   body: "Try changing your code so you're only adding your hometown, then ask someone else to comment again for it to automatically merge!",
       // });
+      core.info("Too many lines were changed. PR cannot be merged");
       return;
     };
 
@@ -45,12 +46,18 @@ async function autoMerge() {
       // TODO: take care of merge conflicts?
       const diffURL = pr.data.diff_url;
       const diff = await getDiff(diffURL);
-      core.info("diff");
+
+      core.info("DIFF");
       core.info(diff);
+      core.info("-----------");
+
+      
+
+
       // make a new copy?
       // delete old pr
       // call the commit a version of the person's name?
-      core.info("can't merge, oop");
+      core.info("Cannot automatically merge this branch");
       return;
     };
 
@@ -71,23 +78,15 @@ async function autoMerge() {
 }
 
 async function getDiff(url) {
+  let search, diff;
   const regex = /\+([a-zA-Z]+.*)/gm;
-
   const { data } = await axios.get(url);
   const html = cheerio.load(data).html();
-
-  let search, diff;
   while ((search = regex.exec(html)) !== null) {
     if (search.index === regex.lastIndex) regex.lastIndex++;
-    core.info("testing")
-    core.info(search[search.length - 1].match)
-    search.forEach((match, groupIndex) => {
-      diff = match;
-    });
-
+    search.forEach((match, groupIndex) => {diff = match;});
+  }
   return diff;
-}
-
 }
 
 autoMerge();
