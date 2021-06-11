@@ -45,6 +45,8 @@ async function autoMerge() {
       return;
     };
 
+    // TODO: Fix "dirty" PRs
+
     if (mergeable == "dirty") {
       // TODO: take care of merge con;flicts?
       core.info("enter not merge");
@@ -82,11 +84,10 @@ async function getDiff(url) {
   const { data } = await axios.get(url);
   const html = cheerio.load(data);
   core.info(html);
-  const txt = $('pre'.text()); // "pre".text is not a function
 
   let search;
   let diff;
-  while ((search = regex.exec(str)) !== null) {
+  while ((search = regex.exec(html)) !== null) {
     if (search.index === regex.lastIndex) regex.lastIndex++;
 
     search.forEach((match, groupIndex) => {
