@@ -45,6 +45,9 @@ async function autoMerge() {
       const contentEncoded = Base64.encode(content);
 
       // TODO: Error: Cannot read property 'createOrUpdateFileContents' of undefined
+      core.info("REST")
+      core.info(JSON.stringify(octokit.rest.repos))
+      core.info("---")
       await octokit.rest.repos.createOrUpdateFileContents({
         repo: repo,
         path: filepath,
