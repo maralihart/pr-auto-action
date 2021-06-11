@@ -3,7 +3,6 @@ const github = require("@actions/github");
 const { Base64 } = require("js-base64");
 const axios = require("axios");
 const cheerio = require("cheerio");
-const fs = require("fs");
 
 async function autoMerge() {
   try {
