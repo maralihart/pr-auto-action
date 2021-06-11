@@ -79,13 +79,9 @@ async function getDiff(url) {
   let search, diff;
   while ((search = regex.exec(html)) !== null) {
     if (search.index === regex.lastIndex) regex.lastIndex++;
-
+    core.info("testing")
+    core.info(search[search.length - 1].match)
     search.forEach((match, groupIndex) => {
-      core.info("groupIndex")
-      core.info(groupIndex)
-      core.info(match);
-      core.info("index");
-      core.info(match[1]);
       diff = match;
     });
 
