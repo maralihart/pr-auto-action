@@ -46,7 +46,9 @@ async function autoMerge() {
       core.info("-----------");
 
       const content = await buildFile(raw_link, diff);
+      core.info("about to encode");
       const contentEncoded = Base64.encode(content);
+      core.info("encoded");
 
       await octokit.repos.createOrUpdateFileContents({
         repo: repo,
@@ -96,6 +98,7 @@ async function getDiff(url) {
 }
 
 async function buildFile(url, addition) {
+  core.info("entered buildFile");
   let search, diff;
   const regex = /<pre[\S\s]+>([\S.]*)<\/pre>/gm;
   const { data } = await axios.get(url);
