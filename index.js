@@ -3,9 +3,6 @@ const github = require("@actions/github");
 
 const axios = require("axios");
 const cheerio = require("cheerio");
-const { CONNREFUSED } = require("node:dns");
-
-core.info("output")
 
 async function autoMerge() {
   try {
