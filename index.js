@@ -46,7 +46,7 @@ async function autoMerge() {
 
       // TODO: Error: Cannot read property 'createOrUpdateFileContents' of undefined
       core.info("REST")
-      core.info(JSON.stringify(octokit.rest.repos))
+      core.info(JSON.stringify(await octokit.rest.repos.get()))
       core.info("---")
       await octokit.rest.repos.createOrUpdateFileContents({
         repo: repo,
