@@ -100,23 +100,21 @@ async function getDiff(url) {
 async function buildFile(url, addition) {
   let search, content;
   const regex = /<body>(.*[\s\S]*)<\/body>/gm;
-  core.info(url)
   const { data } = await axios.get(url);
-  core.info("after axios")
   const html = cheerio.load(data).html();
-  core.info("html");
-  core.info(html);
-  core.info("----");
   while ((search = regex.exec(html)) !== null) {
     if (search.index === regex.lastIndex) regex.lastIndex++;
     search.forEach((match, groupIndex) => {
-      core.info("match");
-      core.info(match);
-      core.info("----")
       content = match;
     });
   }
-  content = content + `\n${addition}`;
+  core.info(content)
+  core.info('addition')
+  core.info(addition);
+  core.info('content + addition')
+  content = content + `${addition}`;
+  core.info(content)
+  core.info('----')
   return content
 }
 
