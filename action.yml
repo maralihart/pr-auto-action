@@ -4,6 +4,15 @@ inputs:
   github-token:
     description: GitHub WebHook Secret Token
     required: true
+  filepath:
+    description: File you'd like to update
+    required: true
+  raw_link:
+    description: The link to the raw file you'd like to update
+    required: true
+  email:
+    description: Email for commits
+    required: true
 runs:
   using: "node12"
   main: "./index.js"
