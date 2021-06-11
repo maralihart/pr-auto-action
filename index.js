@@ -27,10 +27,6 @@ async function autoMerge() {
     const deletions = pr.data.deletions;
     const oneLineAdded = additions === 1 && deletions === 0;
 
-
-    core.info("merge");
-    core.info(mergeable);
-
     if (!oneLineAdded) {
       // TODO: add a comment to the PR saying that only one line can be changed
       // await octokit.rest.pulls.createReviewComment({
@@ -85,9 +81,12 @@ async function getDiff(url) {
     if (search.index === regex.lastIndex) regex.lastIndex++;
 
     search.forEach((match, groupIndex) => {
+      core.info("groupIndex")
+      core.info(groupIndex)
       core.info(match);
-      diff = match[1];
-      core.info(diff);
+      core.info("index");
+      core.info(match[i]);
+      diff = match;
     });
 
   return diff;
