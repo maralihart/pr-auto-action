@@ -35,13 +35,13 @@ async function autoMerge() {
 
     if (!oneLineAdded) {
       // TODO: add a comment to the PR saying that only one line can be changed
-      await octokit.rest.pulls.createReviewComment({
-        owner: owner,
-        repo: repo,
-        pull_number: prNumber,
-        position: 1,
-        body: "Try changing your code so you're only adding your hometown, then ask someone else to comment again for it to automatically merge!",
-      });
+      // await octokit.rest.pulls.createReviewComment({
+      //   owner: owner,
+      //   repo: repo,
+      //   pull_number: prNumber,
+      //   position: 1,
+      //   body: "Try changing your code so you're only adding your hometown, then ask someone else to comment again for it to automatically merge!",
+      // });
       return;
     };
 
@@ -80,7 +80,8 @@ async function getDiff(url) {
   const regex = /\+[a-zA-Z]+[\s\S]*/gm;
 
   const { data } = await axios.get(url);
-  const $ = cheerio.load(data);
+  const html = cheerio.load(data);
+  core.info(html);
   const txt = $('pre'.text()); // "pre".text is not a function
 
   let search;
