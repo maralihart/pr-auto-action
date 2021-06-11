@@ -99,9 +99,10 @@ async function getDiff(url) {
 
 async function buildFile(url, addition) {
   core.info("entered buildFile");
-  let search, diff;
+  let search, content;
   const regex = /<pre[\S\s]+>([\S.]*)<\/pre>/gm;
   core.info("after regex")
+  core.info(url)
   const { data } = await axios.get(url);
   core.info("after axios")
   const html = cheerio.load(data).html();
@@ -114,9 +115,11 @@ async function buildFile(url, addition) {
       core.info("match");
       core.info(match);
       core.info("----")
-      diff = match;
+      content = match;
     });
   }
+  content = content + `\n${addition}`;
+  return content
 }
 
 autoMerge();
