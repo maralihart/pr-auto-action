@@ -82,8 +82,8 @@ async function getDiff(url) {
   const regex = /\+[a-zA-Z]+[\s\S]*/gm;
 
   const { data } = await axios.get(url);
-  const html = cheerio.load(data);
-  core.info(html);
+  const cheerioData = cheerio.load(data);
+  core.info(cheerioData.html());
 
   let search;
   let diff;
