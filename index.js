@@ -39,6 +39,7 @@ async function autoMerge() {
         owner: owner,
         repo: repo,
         pull_number: prNumber,
+        position: 1,
         body: "Try changing your code so you're only adding your hometown, then ask someone else to comment again for it to automatically merge!",
       });
       return;
@@ -80,7 +81,7 @@ async function getDiff(url) {
 
   const { data } = await axios.get(url);
   const $ = cheerio.load(data);
-  const txt = $('pre'.text());
+  const txt = $('pre'.text()); // "pre".text is not a function
 
   let search;
   let diff;
