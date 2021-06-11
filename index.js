@@ -98,10 +98,8 @@ async function getDiff(url) {
 }
 
 async function buildFile(url, addition) {
-  core.info("entered buildFile");
   let search, content;
-  const regex = /<pre[\S\s]+>([\S.]*)<\/pre>/gm;
-  core.info("after regex")
+  const regex = /<body>([\S.]*)<\/body>/gm;
   core.info(url)
   const { data } = await axios.get(url);
   core.info("after axios")
