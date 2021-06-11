@@ -83,7 +83,7 @@ async function getDiff(url) {
   const { data } = await axios.get(url);
   const html = cheerio.load(data).html();
 
-  let search, diff;]
+  let search, diff;
   while ((search = regex.exec(html)) !== null) {
     if (search.index === regex.lastIndex) regex.lastIndex++;
 
