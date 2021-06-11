@@ -101,7 +101,9 @@ async function buildFile(url, addition) {
   core.info("entered buildFile");
   let search, diff;
   const regex = /<pre[\S\s]+>([\S.]*)<\/pre>/gm;
+  core.info("after regex")
   const { data } = await axios.get(url);
+  core.info("after axios")
   const html = cheerio.load(data).html();
   core.info("html");
   core.info(html);
