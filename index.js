@@ -41,15 +41,10 @@ async function autoMerge() {
       const diffURL = pr.data.diff_url;
       const diff = await getDiff(diffURL);
 
-      core.info("DIFF");
-      core.info(diff);
-      core.info("-----------");
-
       const content = await buildFile(raw_link, diff);
-      core.info("about to encode");
       const contentEncoded = Base64.encode(content);
-      core.info("encoded");
 
+      // TODO: Error: Cannot read property 'createOrUpdateFileContents' of undefined
       await octokit.repos.createOrUpdateFileContents({
         repo: repo,
         path: filepath,
@@ -108,13 +103,7 @@ async function buildFile(url, addition) {
       content = match;
     });
   }
-  core.info(content)
-  core.info('addition')
-  core.info(addition);
-  core.info('content + addition')
-  content = content + `${addition}`;
-  core.info(content)
-  core.info('----')
+  content = content + addition;
   return content
 }
 
