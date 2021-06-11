@@ -71,7 +71,7 @@ async function autoMerge() {
 }
 
 async function getDiff(url) {
-  const regex = /\+([a-zA-Z]+[\s\S]*)^</gm;
+  const regex = /\+([a-zA-Z]+.*)/gm;
 
   const { data } = await axios.get(url);
   const html = cheerio.load(data).html();
@@ -85,7 +85,7 @@ async function getDiff(url) {
       core.info(groupIndex)
       core.info(match);
       core.info("index");
-      core.info(match[i]);
+      core.info(match[1]);
       diff = match;
     });
 
