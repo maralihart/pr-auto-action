@@ -39,6 +39,8 @@ async function autoMerge() {
     if (mergeable == "dirty") {
       // TODO: take care of merge conflicts?
       core.info("DIRTY")
+      dirty = true;
+      core.setOutput("dirty", dirty);
       const diffURL = pr.data.diff_url;
       const diff = await getDiff(diffURL);
 
