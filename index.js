@@ -104,16 +104,16 @@ async function getDiff(url) {
   const regex = /\+([a-zA-Z]+.*)/gm;
   try {
     const { data } = await axios.get(url);
+    const html = cheerio.load(data).html();
+    while ((search = regex.exec(html)) !== null) {
+      if (search.index === regex.lastIndex) regex.lastIndex++;
+      search.forEach((match, groupIndex) => {diff = match;});
+    }
+    return diff;
   } catch (error) {
     core.info("Most likely invalid URL");
     core.setFailed(error.message);
   }
-  const html = cheerio.load(data).html();
-  while ((search = regex.exec(html)) !== null) {
-    if (search.index === regex.lastIndex) regex.lastIndex++;
-    search.forEach((match, groupIndex) => {diff = match;});
-  }
-  return diff;
 }
 
 async function buildFile(url, addition) {
@@ -123,25 +123,25 @@ async function buildFile(url, addition) {
   core.info(2)
   try {
     const { data } = await axios.get(url);
+    core.info(3)
+    const html = cheerio.load(data).html();
+    core.info("HTML")
+    core.info(html)
+    core.info("----------")
+    while ((search = regex.exec(html)) !== null) {
+      if (search.index === regex.lastIndex) regex.lastIndex++;
+      search.forEach((match, groupIndex) => {
+        content = match;
+        core.info("CONTENT:  ");
+        core.info(content)
+        core.info("-------")
+      });
+    }
+    content = content + addition;
   } catch (error) {
     core.info("Most likely invalid URL");
     core.setFailed(error.message);
   }
-  core.info(3)
-  const html = cheerio.load(data).html();
-  core.info("HTML")
-  core.info(html)
-  core.info("----------")
-  while ((search = regex.exec(html)) !== null) {
-    if (search.index === regex.lastIndex) regex.lastIndex++;
-    search.forEach((match, groupIndex) => {
-      content = match;
-      core.info("CONTENT:  ");
-      core.info(content)
-      core.info("-------")
-    });
-  }
-  content = content + addition;
   return content
 }
 
