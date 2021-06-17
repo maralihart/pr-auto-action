@@ -50,10 +50,8 @@ async function autoMerge() {
 
       // TODO: Error: Cannot read property 'createOrUpdateFileContents' of undefined
       core.info("REST")
-      const allRepos = await octokit.rest.repos.list({
-        owner,
-        repo
-      })
+      const allRepos = await octokit.rest.repos
+      core.info(JSON.stringify(allRepos))
       const { data } = allRepos
       core.info(JSON.stringify(data))
       core.info("---")
@@ -104,7 +102,12 @@ async function autoMerge() {
 async function getDiff(url) {
   let search, diff;
   const regex = /\+([a-zA-Z]+.*)/gm;
-  const { data } = await axios.get(url);
+  try {
+    const { data } = await axios.get(url);
+  } catch (error) {
+    core.info("Most likely invalid URL");
+    core.setFailed(error.message);
+  }
   const html = cheerio.load(data).html();
   while ((search = regex.exec(html)) !== null) {
     if (search.index === regex.lastIndex) regex.lastIndex++;
@@ -118,7 +121,12 @@ async function buildFile(url, addition) {
   core.info(1)
   const regex = /<body>(.*[\s\S]*)<\/body>/gm;
   core.info(2)
-  const { data } = await axios.get(url);
+  try {
+    const { data } = await axios.get(url);
+  } catch (error) {
+    core.info("Most likely invalid URL");
+    core.setFailed(error.message);
+  }
   core.info(3)
   const html = cheerio.load(data).html();
   core.info("HTML")
