@@ -115,8 +115,11 @@ async function getDiff(url) {
 
 async function buildFile(url, addition) {
   let search, content;
+  core.info(1)
   const regex = /<body>(.*[\s\S]*)<\/body>/gm;
+  core.info(2)
   const { data } = await axios.get(url);
+  core.info(3)
   const html = cheerio.load(data).html();
   core.info("HTML")
   core.info(html)
