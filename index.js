@@ -23,6 +23,8 @@ async function autoMerge() {
       pull_number: prNumber
     });
 
+    core.info(JSON.stringify(pr))
+
     const mergeable = pr.data.mergeable_state;
     const onlyOneChangedFile = pr.data.changed_files === 1;
     const additions = pr.data.additions;
@@ -44,6 +46,7 @@ async function autoMerge() {
       const diffURL = pr.data.diff_url;
       const diff = await getDiff(diffURL);
 
+      core.info(diff);
       core.setOutput("diff", diff);
       return;
 
