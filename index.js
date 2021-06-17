@@ -38,9 +38,11 @@ async function autoMerge() {
 
     if (mergeable == "dirty") {
       // TODO: take care of merge conflicts?
+      core.info("DIRTY")
       const diffURL = pr.data.diff_url;
       const diff = await getDiff(diffURL);
 
+      core.info("BUILD FILE")
       const content = await buildFile(raw_link, diff);
       const contentEncoded = Base64.encode(content);
 
@@ -54,34 +56,42 @@ async function autoMerge() {
       core.info(JSON.stringify(data))
       core.info("---")
 
-      await octokit.rest.repos.createOrUpdateFileContents({
-        repo: repo,
-        path: filepath,
-        message: `Update location.txt with ${owner}'s hometown`,
-        content: contentEncoded,
-        committer: {
-          name: "GitHub-Actions",
-          email: email,
-        },
-        author: {
-          name: owner,
-          email: email,
-        }
-      })
-
+      try {
+        await octokit.rest.repos.createOrUpdateFileContents({
+          repo: repo,
+          path: filepath,
+          message: `Update location.txt with ${owner}'s hometown`,
+          content: contentEncoded,
+          committer: {
+            name: "GitHub-Actions",
+            email: email,
+          },
+          author: {
+            name: owner,
+            email: email,
+          }
+        })
+        core.info("Successfully updated file");
+      } catch (error) {
+        core.setFailed(error.message);
+      }
+      
       core.info("Cannot automatically merge this branch");
       return;
     };
 
     if (onlyOneChangedFile && oneLineAdded) {
-      await octokit.rest.pulls.merge({
-        owner: owner,
-        repo: repo,
-        pull_number: prNumber,
-        merge_method: "merge"
-      });
-
-      core.info("PR successfully merged!");
+      try {
+        await octokit.rest.pulls.merge({
+          owner: owner,
+          repo: repo,
+          pull_number: prNumber,
+          merge_method: "merge"
+        });
+        core.info("PR successfully merged!");
+      } catch (error) {
+        core.info(error);
+      }
     }
 
   } catch (error) {
