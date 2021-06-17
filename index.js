@@ -25,6 +25,7 @@ async function autoMerge() {
 
     core.info(JSON.stringify(pr))
     core.setOutput("ref", pr.data.head.ref);
+    core.setOutput("owner", owner);
     const mergeable = pr.data.mergeable_state;
     const onlyOneChangedFile = pr.data.changed_files === 1;
     const additions = pr.data.additions;
