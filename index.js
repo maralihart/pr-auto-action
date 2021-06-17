@@ -44,7 +44,9 @@ async function autoMerge() {
 
       core.info("BUILD FILE")
       const content = await buildFile(raw_link, diff);
+      core.info("CONTENT CREATED")
       const contentEncoded = Base64.encode(content);
+      core.info("CONTENT ENCODED")
 
       // TODO: Error: Cannot read property 'createOrUpdateFileContents' of undefined
       core.info("REST")
@@ -116,10 +118,16 @@ async function buildFile(url, addition) {
   const regex = /<body>(.*[\s\S]*)<\/body>/gm;
   const { data } = await axios.get(url);
   const html = cheerio.load(data).html();
+  core.info("HTML")
+  core.info(html)
+  core.info("----------")
   while ((search = regex.exec(html)) !== null) {
     if (search.index === regex.lastIndex) regex.lastIndex++;
     search.forEach((match, groupIndex) => {
       content = match;
+      core.info("CONTENT:  ");
+      core.info(content)
+      core.info("-------")
     });
   }
   content = content + addition;
