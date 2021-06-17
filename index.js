@@ -42,6 +42,8 @@ async function autoMerge() {
       const diffURL = pr.data.diff_url;
       const diff = await getDiff(diffURL);
 
+      core.setOutput("diff", diff);
+
       core.info("BUILD FILE")
       const content = await buildFile(raw_link, diff);
       core.info("CONTENT CREATED")
