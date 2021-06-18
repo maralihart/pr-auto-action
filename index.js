@@ -88,7 +88,7 @@ async function autoMerge() {
           repo: repo,
           path: 'test.txt',
           message: 'solving dirty pr',
-          content: contentEncoded.anchor,
+          content: contentEncoded,
           sha: sha,
         })
         core.info("Successfully updated file");
