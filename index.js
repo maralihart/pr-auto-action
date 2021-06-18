@@ -3,7 +3,6 @@ const github = require("@actions/github");
 const { Base64 } = require("js-base64");
 const axios = require("axios");
 const cheerio = require("cheerio");
-Octokit = Octokit.plugin(require("octokit-commit-multiple-files"));
 
 async function autoMerge() {
   try {
@@ -12,7 +11,7 @@ async function autoMerge() {
     const raw_link = core.getInput("raw_link");
     const email = core.getInput("email");
     const myToken = core.getInput("github-token");
-    const octokit = Octokit(myToken);
+    const octokit = github.getOctokit(myToken).plugin(require("octokit-commit-multiple-files"));
 
     const owner = payload.issue.user.login;
     const repo = payload.repository.name;
