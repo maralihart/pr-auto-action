@@ -5,6 +5,7 @@
     "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.10",
     "fs": "^0.0.1-security",
-    "js-base64": "^3.6.1"
+    "js-base64": "^3.6.1",
+    "octokit-commit-multiple-files": "^3.2.1"
   }
 }

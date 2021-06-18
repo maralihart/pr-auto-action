@@ -3,6 +3,7 @@ const github = require("@actions/github");
 const { Base64 } = require("js-base64");
 const axios = require("axios");
 const cheerio = require("cheerio");
+Octokit = Octokit.plugin(require("octokit-commit-multiple-files"));
 
 async function autoMerge() {
   try {
@@ -11,7 +12,7 @@ async function autoMerge() {
     const raw_link = core.getInput("raw_link");
     const email = core.getInput("email");
     const myToken = core.getInput("github-token");
-    const octokit = github.getOctokit(myToken);
+    const octokit = Octokit(myToken);
 
     const owner = payload.issue.user.login;
     const repo = payload.repository.name;
@@ -83,14 +84,31 @@ async function autoMerge() {
         //     email: email,
         //   }
         // })
-        await octokit.request('PUT /repos/maralihart/test-repo/contents/test.txt', {
-          owner: owner,
-          repo: repo,
-          path: 'test.txt',
-          message: 'solving dirty pr',
-          content: contentEncoded,
-          sha: sha,
-        })
+        // await octokit.request('PUT /repos/maralihart/test-repo/contents/test.txt', {
+        //   owner: owner,
+        //   repo: repo,
+        //   path: 'test.txt',
+        //   message: 'solving dirty pr',
+        //   content: contentEncoded,
+        //   sha: sha,
+        // })
+        const branchName = await octokit.repos.createOrUpdateFiles({
+          owner: "maralihart",
+          repo: "test-repo",
+          branch: "main",
+          createBranch: true,
+          changes: [
+            {
+              message: "Your commit message",
+              files: {
+                "test.md": `# This is a test`,
+                "test2.md": {
+                  contents: `Something else`,
+                },
+              },
+            },
+          ],
+        });
         core.info("Successfully updated file");
       } catch (error) {
         core.setFailed(error.message);
