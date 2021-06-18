@@ -49,10 +49,10 @@ async function autoMerge() {
 
       core.info(diff);
       core.setOutput("diff", diff);
-      return;
 
       core.info("BUILD FILE")
       const content = await buildFile(raw_link, diff);
+      core.info(content);
       core.info("CONTENT CREATED")
       const contentEncoded = Base64.encode(content);
       core.info("CONTENT ENCODED")
@@ -65,20 +65,29 @@ async function autoMerge() {
       core.info(JSON.stringify(data))
       core.info("---")
 
+      
+
       try {
-        await octokit.rest.repos.createOrUpdateFileContents({
+        // await octokit.rest.repos.createOrUpdateFileContents({
+        //   repo: repo,
+        //   path: filepath,
+        //   message: `Update location.txt with ${owner}'s hometown`,
+        //   content: contentEncoded,
+        //   committer: {
+        //     name: "GitHub-Actions",
+        //     email: email,
+        //   },
+        //   author: {
+        //     name: owner,
+        //     email: email,
+        //   }
+        // })
+        await octokit.request('PUT /repos/maralihart/test-repo/contents/test.txt', {
+          owner: owner,
           repo: repo,
-          path: filepath,
-          message: `Update location.txt with ${owner}'s hometown`,
-          content: contentEncoded,
-          committer: {
-            name: "GitHub-Actions",
-            email: email,
-          },
-          author: {
-            name: owner,
-            email: email,
-          }
+          path: 'test.txt',
+          message: 'solving dirty pr',
+          content: contentEncoded
         })
         core.info("Successfully updated file");
       } catch (error) {
