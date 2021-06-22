@@ -26,4 +26,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 ## Future Expansions
-- [ ]Solving merge conflicts then automerging PRs
+- [ ] Solving merge conflicts then automerging PRs
