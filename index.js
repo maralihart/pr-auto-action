@@ -56,7 +56,7 @@ async function autoMerge() {
           path: filepath,
           message: `Update location.txt with ${owner}'s hometown`,
           content: contentEncoded,
-          sha: sha,
+          sha: "13c018b1fedaa1a92f7942a625e0c9bf1a8d625d",
           committer: {
             name: "GitHub-Actions",
             email: email,
