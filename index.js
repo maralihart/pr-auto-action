@@ -36,7 +36,6 @@ async function autoMerge() {
     };
 
     if (mergeable == "dirty") {
-      // curl https://api.github.com/repos/maralihart/test-repo/contents/test.txt
       
       const diffURL = pr.data.diff_url;
       const diff = await getDiff(diffURL);
@@ -46,9 +45,6 @@ async function autoMerge() {
 
       try {
         const { data } = await axios.get(apiLink);
-        core.info("file data")
-        core.info(data);
-        core.info("-----")
         sha = data.sha;
       } catch (error) {
         core.info("Most likely invalid URL");
@@ -79,11 +75,7 @@ async function autoMerge() {
       }
 
       // TODO: Delete PR after it's been fixed
-      // try {
-      //   core.info("PR closed");
-      // } catch (error) {
-      //   core.info(error);
-      // }
+      
       return;
     };
 
