@@ -46,6 +46,9 @@ async function autoMerge() {
 
       try {
         const { data } = await axios.get(apiLink);
+        core.info("file data")
+        core.info(data);
+        core.info("-----")
         sha = data.sha;
       } catch (error) {
         core.info("Most likely invalid URL");
@@ -53,6 +56,7 @@ async function autoMerge() {
       }
 
       try {
+        core.info('entered this try')
         await octokit.rest.repos.createOrUpdateFileContents({
           owner: owner,
           repo: repo,
