@@ -35,6 +35,10 @@ async function autoMerge() {
       return;
     };
 
+    const sleep = (milliseconds) => {
+      return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
+
     if (mergeable == "dirty") {
       // TODO: take care of merge conflicts?
       const diffURL = pr.data.diff_url;
@@ -43,7 +47,7 @@ async function autoMerge() {
       const contentEncoded = Base64.encode(content);
 
       try {
-        await sleep(30000)
+        await sleep(15000);
         await octokit.rest.repos.createOrUpdateFileContents({
           owner: owner,
           repo: repo,
