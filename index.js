@@ -45,7 +45,7 @@ async function autoMerge() {
       const sha = ""
 
       try {
-        const { data } = await axios.get(api-link);
+        const { data } = await axios.get(apiLink);
         sha = data.sha;
       } catch (error) {
         core.info("Most likely invalid URL");
