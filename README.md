@@ -25,5 +25,25 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
+v1.1.0 - Considering merge conflicts and adding the addition to the bottom of the file
+```
+name: Check PR can be merged
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    steps:
+      - id: automerge
+        name: Automatically Merge PR
+        uses: maralihart/pr-auto-action@v1.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          filepath: 'test.txt'
+          raw-link: 'https://raw.githubusercontent.com/maralihart/test-repo/main/test.txt'
+          file-link: 'https://api.github.com/repos/maralihart/test-repo/contents/test.txt'
+          email: 'hi@mara.fyi'
+```
 ## Future Expansions
-- [ ] Solving merge conflicts then automerging PRs
+- [ ] Close PRs after merge conflicts work
