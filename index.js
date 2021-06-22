@@ -1,9 +1,15 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
+const { Base64 } = require("js-base64");
+const axios = require("axios");
+const cheerio = require("cheerio");
 
 async function autoMerge() {
   try {
     const payload = github.context.payload;
+    const filepath = core.getInput("filepath");
+    const raw_link = core.getInput("raw_link");
+    const email = core.getInput("email");
     const myToken = core.getInput("github-token");
     const octokit = github.getOctokit(myToken);
 
@@ -29,8 +35,23 @@ async function autoMerge() {
     };
 
     if (mergeable == "dirty") {
-      core.info("PR cannot be automatically merged.")
-    }
+      // TODO: take care of merge conflicts?
+      const diffURL = pr.data.diff_url;
+      const diff = await getDiff(diffURL);
+      const content = await buildFile(raw_link, diff);
+      const contentEncoded = Base64.encode(content);
+
+      // TODO: Error: Cannot read property 'createOrUpdateFileContents' of undefined
+
+      try {
+        core.info("Successfully updated file");
+      } catch (error) {
+        core.setFailed(error.message);
+      }
+      
+      core.info("Cannot automatically merge this branch");
+      return;
+    };
 
     if (onlyOneChangedFile && oneLineAdded) {
       try {
@@ -49,6 +70,45 @@ async function autoMerge() {
   } catch (error) {
     core.setFailed(error.message);
   }
+}
+
+async function getDiff(url) {
+  let search, diff;
+  const regex = /\+([a-zA-Z]+.*)/gm;
+  try {
+    const { data } = await axios.get(url);
+    const html = cheerio.load(data).html();
+    while ((search = regex.exec(html)) !== null) {
+      if (search.index === regex.lastIndex) regex.lastIndex++;
+      search.forEach((match, groupIndex) => {diff = match;});
+    }
+    return diff;
+  } catch (error) {
+    core.info("Most likely invalid URL");
+    core.setFailed(error.message);
+  }
+}
+
+async function buildFile(url, addition) {
+  let search, content;
+  const regex = /<body>(.*[\s\S]*)<\/body>/gm;
+  try {
+    const { data } = await axios.get(url);
+    const html = cheerio.load(data).html();
+    core.info(html)
+    while ((search = regex.exec(html)) !== null) {
+      if (search.index === regex.lastIndex) regex.lastIndex++;
+      search.forEach((match, groupIndex) => {
+        content = match;
+        core.info(content)
+      });
+    }
+    content = content + addition;
+  } catch (error) {
+    core.info("Most likely invalid URL");
+    core.setFailed(error.message);
+  }
+  return content
 }
 
 autoMerge();
