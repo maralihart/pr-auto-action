@@ -5,11 +5,13 @@ inputs:
     description: GitHub WebHook Secret Token
     required: true
   filepath:
-    description: File you'd like to update
+    description: Path to you'd like to update from root repo
     required: true
-  raw_link:
-    description: The link to the raw file you'd like to update
+  raw-link:
+    description: The link to the raw file you'd like to update. ex - 'https://raw.githubusercontent.com/{owner}/{repo}/{defaultbranch}/{filename}' 
     required: true
+  file-link:
+    description: https://api.github.com/repos/{owner}/{repo}/contents/{filename}
   email:
     description: Email for commits
     required: true

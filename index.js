@@ -8,9 +8,10 @@ async function autoMerge() {
   try {
     const payload = github.context.payload;
     const filepath = core.getInput("filepath");
-    const raw_link = core.getInput("raw_link");
+    const raw_link = core.getInput("raw-link");
     const email = core.getInput("email");
     const myToken = core.getInput("github-token");
+    const apiLink = core.getInput("api-link")
     const octokit = github.getOctokit(myToken);
 
     const owner = payload.issue.user.login;
@@ -23,9 +24,6 @@ async function autoMerge() {
       pull_number: prNumber
     });
 
-    core.info(pr);
-
-    const sha = pr.data.head.sha;
     const mergeable = pr.data.mergeable_state;
     const onlyOneChangedFile = pr.data.changed_files === 1;
     const additions = pr.data.additions;
@@ -37,26 +35,31 @@ async function autoMerge() {
       return;
     };
 
-    const sleep = (milliseconds) => {
-      return new Promise(resolve => setTimeout(resolve, milliseconds))
-    }
-
     if (mergeable == "dirty") {
-      // TODO: take care of merge conflicts?
+      // curl https://api.github.com/repos/maralihart/test-repo/contents/test.txt
+      
       const diffURL = pr.data.diff_url;
       const diff = await getDiff(diffURL);
       const content = await buildFile(raw_link, diff);
       const contentEncoded = Base64.encode(content);
+      const sha = ""
 
       try {
-        await sleep(15000);
+        const { data } = await axios.get(api-link);
+        sha = data.sha;
+      } catch (error) {
+        core.info("Most likely invalid URL");
+        core.setFailed(error.message);
+      }
+
+      try {
         await octokit.rest.repos.createOrUpdateFileContents({
           owner: owner,
           repo: repo,
           path: filepath,
           message: `Update location.txt with ${owner}'s hometown`,
           content: contentEncoded,
-          sha: "13c018b1fedaa1a92f7942a625e0c9bf1a8d625d",
+          sha: sha,
           committer: {
             name: "GitHub-Actions",
             email: email,
@@ -70,8 +73,13 @@ async function autoMerge() {
       } catch (error) {
         core.setFailed(error.message);
       }
-      
-      core.info("Cannot automatically merge this branch");
+
+      // TODO: Delete PR after it's been fixed
+      // try {
+      //   core.info("PR closed");
+      // } catch (error) {
+      //   core.info(error);
+      // }
       return;
     };
 
