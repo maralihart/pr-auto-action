@@ -31,7 +31,7 @@ async function autoMerge() {
     const oneLineAdded = additions === 1 && deletions === 0;
 
     if (!oneLineAdded) {
-      core.info("Too many lines were changed. PR cannot be merged");
+      core.setFailed("Too many lines were changed. PR cannot be merged");
       return;
     };
 
@@ -43,6 +43,7 @@ async function autoMerge() {
       const contentEncoded = Base64.encode(content);
 
       try {
+        await sleep(30000)
         await octokit.rest.repos.createOrUpdateFileContents({
           owner: owner,
           repo: repo,
@@ -57,7 +58,7 @@ async function autoMerge() {
           author: {
             name: owner,
             email: email,
-          },
+          }
         })
         core.info("Successfully updated file");
       } catch (error) {
@@ -110,12 +111,10 @@ async function buildFile(url, addition) {
   try {
     const { data } = await axios.get(url);
     const html = cheerio.load(data).html();
-    core.info(html)
     while ((search = regex.exec(html)) !== null) {
       if (search.index === regex.lastIndex) regex.lastIndex++;
       search.forEach((match, groupIndex) => {
         content = match;
-        core.info(content)
       });
     }
     content = content + addition;
