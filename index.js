@@ -23,6 +23,7 @@ async function autoMerge() {
       pull_number: prNumber
     });
 
+    const sha = pr.data.head.sha;
     const mergeable = pr.data.mergeable_state;
     const onlyOneChangedFile = pr.data.changed_files === 1;
     const additions = pr.data.additions;
@@ -41,9 +42,23 @@ async function autoMerge() {
       const content = await buildFile(raw_link, diff);
       const contentEncoded = Base64.encode(content);
 
-      // TODO: Error: Cannot read property 'createOrUpdateFileContents' of undefined
-
       try {
+        await octokit.rest.repos.createOrUpdateFileContents({
+          owner: owner,
+          repo: repo,
+          path: filepath,
+          message: `Update location.txt with ${owner}'s hometown`,
+          content: contentEncoded,
+          sha: sha,
+          committer: {
+            name: "GitHub-Actions",
+            email: email,
+          },
+          author: {
+            name: owner,
+            email: email,
+          },
+        })
         core.info("Successfully updated file");
       } catch (error) {
         core.setFailed(error.message);
