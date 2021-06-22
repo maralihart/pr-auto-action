@@ -9,37 +9,21 @@ Checks:
 Special thanks to [the Frontside Discord community](https://discord.gg/YxWuzm4WR4) for helping me debug and get past a major blocker, especially [minkimcello](https://github.com/minkimcello) and JacobBolda!
 
 ## Example Usage
-v0.29 - Merging a PR with a single addition upon comment
+v1.0.0 - Merging a PR with a single addition upon comment
 ```
 name: Check PR can be merged
 on:
   issue_comment:
     types: [created]
 jobs:
-  run_actions:
+  automerge:
     runs-on: ubuntu-latest
     steps:
-      - name: Automatically Merge PR
-        uses: maralihart/pr-auto-action@v0.29
+      - id: automerge
+        name: Automatically Merge PR
+        uses: maralihart/pr-auto-action@v1.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
-
-Not Yet Implemented
-```
-name: Check PR can be merged
-on:
-  issue_comment:
-    types: [created]
-jobs:
-  run_actions:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Automatically Merge PR
-        uses: maralihart/pr-auto-action@v0.48
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }},
-          filepath: './test.txt',
-          raw_link: 'https://raw.githubusercontent.com/maralihart/test-repo/main/test.txt',
-          email: 'hi@mara.fyi'
-```
+## Future Expansions
+- [ ]Solving merge conflicts then automerging PRs
