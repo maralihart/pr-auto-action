@@ -23,6 +23,8 @@ async function autoMerge() {
       pull_number: prNumber
     });
 
+    core.info(pr);
+
     const sha = pr.data.head.sha;
     const mergeable = pr.data.mergeable_state;
     const onlyOneChangedFile = pr.data.changed_files === 1;
