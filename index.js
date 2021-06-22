@@ -11,7 +11,7 @@ async function autoMerge() {
     const raw_link = core.getInput("raw-link");
     const email = core.getInput("email");
     const myToken = core.getInput("github-token");
-    const apiLink = core.getInput("api-link")
+    const apiLink = core.getInput("file-link")
     const octokit = github.getOctokit(myToken);
 
     const owner = payload.issue.user.login;
@@ -42,7 +42,7 @@ async function autoMerge() {
       const diff = await getDiff(diffURL);
       const content = await buildFile(raw_link, diff);
       const contentEncoded = Base64.encode(content);
-      const sha = ""
+      let sha = ""
 
       try {
         const { data } = await axios.get(apiLink);
