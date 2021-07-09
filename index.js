@@ -42,7 +42,6 @@ async function autoMerge() {
       const diffURL = pr.data.diff_url;
       const diff = await getDiff(diffURL);
       const content = await buildFile(raw_link, diff);
-      core.info(content);
       const contentEncoded = Base64.encode(content);
       let sha = ""
 
@@ -79,10 +78,12 @@ async function autoMerge() {
       }
 
       // TODO: Delete PR after it's been fixed
+      core.info('get the patch');
       await octokit.request(`PATCH /repos/${owner}/${repo}/pulls/${prNumber}`, {
         owner: owner,
         repo: repo,
         pull_number: prNumber,
+        title: '[AUTOMERGED]',
         state: 'closed'
       })
       core.info(pr.data.state);
