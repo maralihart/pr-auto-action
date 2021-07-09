@@ -99,6 +99,7 @@ async function autoMerge() {
     }
     core.info(pr.data.state);
   } catch (error) {
+    core.info("General error");
     core.setFailed(error.message);
   }
 }
