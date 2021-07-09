@@ -30,7 +30,7 @@ async function autoMerge() {
     ) {
       core.setFailed("Too many lines were changed. PR cannot be merged");
     } else if (pr.data.mergeable_state == "dirty") {
-      core.info("Cannot merge PR automatically");
+      core.info("PR is dirty");
 
       const contentEncoded = await getNewFile(pr.data.diff_url, raw_link);
       const { data } = await axios.get(apiLink);
@@ -61,7 +61,7 @@ async function autoMerge() {
         state: 'closed'
       });
     } else {
-      core.info("PR can be automerged");
+      core.info("PR is clean");
       await octokit.rest.pulls.merge({
         owner: owner,
         repo: repo,
@@ -71,6 +71,7 @@ async function autoMerge() {
     }
   } catch (error) {
     core.setFailed(error);
+    core.info("Try re-running the job if the PR was said to be clean, but workflow failed")
   }
 }
 
