@@ -54,8 +54,6 @@ async function autoMerge() {
       }
 
       try {
-        core.info('entered this try')
-        core.info(pr.data.state);
         await octokit.rest.repos.createOrUpdateFileContents({
           owner: owner,
           repo: repo,
@@ -73,20 +71,17 @@ async function autoMerge() {
           }
         })
         core.info("Successfully updated file");
+
+        await octokit.request(`PATCH /repos/${owner}/${repo}/pulls/${prNumber}`, {
+          owner: owner,
+          repo: repo,
+          pull_number: prNumber,
+          title: '[AUTOMERGED] ' + pr.data.title,
+          state: 'closed'
+        })
       } catch (error) {
         core.setFailed(error.message);
       }
-
-      // TODO: Delete PR after it's been fixed
-      core.info('get the patch');
-      await octokit.request(`PATCH /repos/${owner}/${repo}/pulls/${prNumber}`, {
-        owner: owner,
-        repo: repo,
-        pull_number: prNumber,
-        title: '[AUTOMERGED] ' + pr.data.title,
-        state: 'closed'
-      })
-      core.info(pr.data.state);
       return;
     };
 
@@ -103,7 +98,6 @@ async function autoMerge() {
         core.info(error);
       }
     }
-    core.info(pr.data.state);
   } catch (error) {
     core.info("General error");
     core.setFailed(error.message);
