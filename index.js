@@ -133,7 +133,11 @@ async function buildFile(url, addition) {
         content = match;
       });
     }
-    content = content + addition + "\n";
+    core.info("before newline")
+    core.info(content)
+    content = content + "\n" + addition + "\n";
+    core.info("after newline")
+    core.info(content)
   } catch (error) {
     core.info("Most likely invalid URL");
     core.setFailed(error.message);
