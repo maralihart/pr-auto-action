@@ -135,7 +135,7 @@ async function buildFile(url, addition) {
     }
     core.info("before newline")
     core.info(content)
-    content = content + "\n" + addition + "\n";
+    content = content + addition + "\n";
     core.info("after newline")
     core.info(content)
   } catch (error) {
