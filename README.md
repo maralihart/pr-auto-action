@@ -25,7 +25,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
-v1.1.0 - Considering merge conflicts and adding the addition to the bottom of the file
+v1.1.1 - Considering merge conflicts and adding the addition to the bottom of the file and closing original PR
 ```
 name: Check PR can be merged
 on:
@@ -45,5 +45,3 @@ jobs:
           file-link: 'https://api.github.com/repos/maralihart/test-repo/contents/test.txt'
           email: 'hi@mara.fyi'
 ```
-## Future Expansions
-- [ ] Close PRs after merge conflicts work
