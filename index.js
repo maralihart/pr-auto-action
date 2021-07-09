@@ -42,6 +42,7 @@ async function autoMerge() {
       const diffURL = pr.data.diff_url;
       const diff = await getDiff(diffURL);
       const content = await buildFile(raw_link, diff);
+      core.info(content);
       const contentEncoded = Base64.encode(content);
       let sha = ""
 
@@ -131,7 +132,7 @@ async function buildFile(url, addition) {
         content = match;
       });
     }
-    content = content + addition + "\n";
+    content = content + "\n" + addition + "\n";
   } catch (error) {
     core.info("Most likely invalid URL");
     core.setFailed(error.message);
