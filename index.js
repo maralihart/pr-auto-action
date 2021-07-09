@@ -75,6 +75,7 @@ async function autoMerge() {
       }
 
       // TODO: Delete PR after it's been fixed
+      pr.data.state = "closed";
       
       return;
     };
