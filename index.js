@@ -79,7 +79,7 @@ async function autoMerge() {
       }
 
       // TODO: Delete PR after it's been fixed
-      pr.data.state = "closed";
+      await closePR(owner, repo, prNumber);
       core.info(pr.data.state);
       return;
     };
@@ -133,16 +133,21 @@ async function buildFile(url, addition) {
         content = match;
       });
     }
-    core.info("before newline")
-    core.info(content)
     content = content + addition + "\n";
-    core.info("after newline")
-    core.info(content)
   } catch (error) {
     core.info("Most likely invalid URL");
     core.setFailed(error.message);
   }
   return content
+}
+
+async function closePR(owner, repo, prNumber) {
+  await octokit.request(`PATCH /repos/${owner}/${repo}/pulls/${prNumber}`, {
+    owner: owner,
+    repo: repo,
+    pull_number: prNumber,
+    state: 'closed'
+  })
 }
 
 autoMerge();
