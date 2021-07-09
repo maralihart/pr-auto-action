@@ -53,6 +53,7 @@ async function autoMerge() {
 
       try {
         core.info('entered this try')
+        core.info(pr.data.state);
         await octokit.rest.repos.createOrUpdateFileContents({
           owner: owner,
           repo: repo,
@@ -76,7 +77,7 @@ async function autoMerge() {
 
       // TODO: Delete PR after it's been fixed
       pr.data.state = "closed";
-      
+      core.info(pr.data.state);
       return;
     };
 
