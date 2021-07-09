@@ -131,7 +131,7 @@ async function buildFile(url, addition) {
         content = match;
       });
     }
-    content = content + addition;
+    content = content + addition + "\n";
   } catch (error) {
     core.info("Most likely invalid URL");
     core.setFailed(error.message);
