@@ -24,83 +24,53 @@ async function autoMerge() {
       pull_number: prNumber
     });
 
-    const mergeable = pr.data.mergeable_state;
-    const onlyOneChangedFile = pr.data.changed_files === 1;
-    const additions = pr.data.additions;
-    const deletions = pr.data.deletions;
-    const oneLineAdded = 
-      (additions === 1 && deletions === 0) 
-      || (additions === 2 && deletions === 1);
-
-    if (!oneLineAdded) {
+    if (
+      !(pr.data.additions < 2 && pr.data.additions - pr.data.deletions === 1)
+      || !(pr.data.changed_files === 1)
+    ) {
       core.setFailed("Too many lines were changed. PR cannot be merged");
-      return;
-    };
+    } else if (pr.data.mergeable_state == "dirty") {
+      core.info("Cannot merge PR automatically");
 
-    if (mergeable == "dirty") {
-      
-      const diffURL = pr.data.diff_url;
-      const diff = await getDiff(diffURL);
-      const content = await buildFile(raw_link, diff);
-      const contentEncoded = Base64.encode(content);
-      let sha = ""
+      const contentEncoded = await getNewFile(pr.data.diff_url, raw_link);
+      const { data } = await axios.get(apiLink);
+      const sha = data.sha;
 
-      try {
-        const { data } = await axios.get(apiLink);
-        sha = data.sha;
-      } catch (error) {
-        core.info("Most likely invalid URL");
-        core.setFailed(error.message);
-      }
+      await octokit.rest.repos.createOrUpdateFileContents({
+        owner: owner,
+        repo: repo,
+        path: filepath,
+        message: `Update location.txt with ${owner}'s hometown`,
+        content: contentEncoded,
+        sha: sha,
+        committer: {
+          name: "GitHub-Actions",
+          email: email,
+        },
+        author: {
+          name: owner,
+          email: email,
+        }
+      });
 
-      try {
-        await octokit.rest.repos.createOrUpdateFileContents({
-          owner: owner,
-          repo: repo,
-          path: filepath,
-          message: `Update location.txt with ${owner}'s hometown`,
-          content: contentEncoded,
-          sha: sha,
-          committer: {
-            name: "GitHub-Actions",
-            email: email,
-          },
-          author: {
-            name: owner,
-            email: email,
-          }
-        })
-        core.info("Successfully updated file");
-
-        await octokit.request(`PATCH /repos/${owner}/${repo}/pulls/${prNumber}`, {
-          owner: owner,
-          repo: repo,
-          pull_number: prNumber,
-          title: '[AUTOMERGED] ' + pr.data.title,
-          state: 'closed'
-        })
-      } catch (error) {
-        core.setFailed(error.message);
-      }
-      return;
-    };
-
-    if (onlyOneChangedFile && oneLineAdded) {
-      try {
-        await octokit.rest.pulls.merge({
-          owner: owner,
-          repo: repo,
-          pull_number: prNumber,
-          merge_method: "merge"
-        });
-        core.info("PR successfully merged!");
-      } catch (error) {
-        core.info(error);
-      }
+      await octokit.request(`PATCH /repos/${owner}/${repo}/pulls/${prNumber}`, {
+        owner: owner,
+        repo: repo,
+        pull_number: prNumber,
+        title: '[AUTOMERGED] ' + pr.data.title,
+        state: 'closed'
+      });
+    } else {
+      core.info("PR can be automerged");
+      await octokit.rest.pulls.merge({
+        owner: owner,
+        repo: repo,
+        pull_number: prNumber,
+        merge_method: "merge"
+      });
     }
   } catch (error) {
-    core.info("General error");
-    core.setFailed(error.message);
+    core.setFailed(error);
   }
 }
 
@@ -139,6 +109,13 @@ async function buildFile(url, addition) {
     core.setFailed(error.message);
   }
   return content
+}
+
+async function getNewFile(pr, raw_link) {
+  const diffURL = pr.data.diff_url;
+  const diff = await getDiff(diffURL);
+  const content = await buildFile(raw_link, diff);
+  return Base64.encode(content);
 }
 
 autoMerge();
