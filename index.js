@@ -28,7 +28,7 @@ async function autoMerge() {
     const onlyOneChangedFile = pr.data.changed_files === 1;
     const additions = pr.data.additions;
     const deletions = pr.data.deletions;
-    const oneLineAdded = additions === 1 && deletions === 0;
+    const oneLineAdded = additions === 1 && deletions <= 1;
 
     if (!oneLineAdded) {
       core.setFailed("Too many lines were changed. PR cannot be merged");
@@ -94,7 +94,7 @@ async function autoMerge() {
         core.info(error);
       }
     }
-
+    core.info(pr.data.state);
   } catch (error) {
     core.setFailed(error.message);
   }
