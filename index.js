@@ -79,7 +79,12 @@ async function autoMerge() {
       }
 
       // TODO: Delete PR after it's been fixed
-      await closePR(owner, repo, prNumber);
+      await octokit.request(`PATCH /repos/${owner}/${repo}/pulls/${prNumber}`, {
+        owner: owner,
+        repo: repo,
+        pull_number: prNumber,
+        state: 'closed'
+      })
       core.info(pr.data.state);
       return;
     };
@@ -139,15 +144,6 @@ async function buildFile(url, addition) {
     core.setFailed(error.message);
   }
   return content
-}
-
-async function closePR(owner, repo, prNumber) {
-  await octokit.request(`PATCH /repos/${owner}/${repo}/pulls/${prNumber}`, {
-    owner: owner,
-    repo: repo,
-    pull_number: prNumber,
-    state: 'closed'
-  })
 }
 
 autoMerge();
