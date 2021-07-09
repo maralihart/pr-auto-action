@@ -83,7 +83,7 @@ async function autoMerge() {
         owner: owner,
         repo: repo,
         pull_number: prNumber,
-        title: '[AUTOMERGED]',
+        title: '[AUTOMERGED] ' + pr.data.title,
         state: 'closed'
       })
       core.info(pr.data.state);
