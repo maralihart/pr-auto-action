@@ -25,7 +25,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
-v1.1.1 - Considering merge conflicts and adding the addition to the bottom of the file and closing original PR
+v1.2.1 - Considering merge conflicts and adding the addition to the bottom of the file and closing original PR
 ```
 name: Check PR can be merged
 on:
