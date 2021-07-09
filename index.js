@@ -111,8 +111,7 @@ async function buildFile(url, addition) {
   return content
 }
 
-async function getNewFile(pr, raw_link) {
-  const diffURL = pr.data.diff_url;
+async function getNewFile(diffURL, raw_link) {
   const diff = await getDiff(diffURL);
   const content = await buildFile(raw_link, diff);
   return Base64.encode(content);
